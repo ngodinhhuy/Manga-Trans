@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="NewSanofi.UserControls.SubControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NewSanofi.UserControls"
+              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d"  x:Name="MainWD">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedWindowCommand}" CommandParameter="{Binding ElementName=MainWD}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid Height="670" Width="1280">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="130"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left">
+            
+            <Button Content="Import File" Command="{Binding InportExcelCommand}" Foreground="White" VerticalAlignment="Stretch"/>
+            <TextBlock Text="{Binding ExcelPath}" FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+        </StackPanel>
+            <StackPanel x:Name="StartRowSP" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left">
+                <TextBlock Text="Start Row: " FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox Margin="10,0,10,10" Text="{Binding RowStart}" MinWidth="100"/>
+                <Button Content="Set" Foreground="White" Command="{Binding SetCommand}"/>
+            </StackPanel>
+
+        </Grid>
+        <Border BorderBrush="Blue" Opacity="0.8" Grid.Row="1" BorderThickness="0,1,0,1">
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock FontSize="30" Text="IP Address:"/>
+                <TextBox FontSize="30" Margin="10,0" Foreground="Blue" Opacity="0.8" Width="250" Name="ipaddress" Text="{Binding IPAddress,UpdateSourceTrigger=LostFocus}"/>
+                <TextBlock FontSize="30" Text="Port:"/>
+                <TextBox FontSize="30" Margin="10,0" Foreground="Blue" Opacity="0.8" Width="100" Name="port" Text="{Binding Port}"/>
+                <Button Content="{Binding StatusString}" Margin="30,0" Foreground="White" FontWeight="Bold" Command="{Binding ConfirmCommand}"/>
+                <Button Content="{Binding RunString}" Margin="30,0" Foreground="White" FontWeight="Bold" Command="{Binding RunCommand}"/>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Content Print:" FontSize="30"/>
+                <TextBlock FontSize="30" Text="{Binding ContentPrint}" Margin="10,0" Foreground="Blue" Opacity="0.8"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Response Message:" FontSize="30"/>
+                <TextBox FontSize="30" Text="{Binding ResponseMessage}" Margin="10,0" Width="700" Foreground="Blue" Opacity="0.8"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Counter:" FontSize="30"/>
+                <TextBlock FontSize="30" Text="{Binding CounterText}" Margin="10,0" Foreground="Blue" Opacity="0.8"/>
+                <Button Content="Reset" Margin="30,0" FontWeight="Bold" Foreground="White" Command="{Binding ResetCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

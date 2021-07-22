@@ -1,0 +1,218 @@
+﻿<Window x:Class="NewSanofi.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NewSanofi"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"
+        SnapsToDevicePixels="True"
+        DataContext="{StaticResource MainVM}"
+        Title="MainWindow" x:Name="MainWD" FontFamily="{StaticResource MaterialDesignFont}" Height="auto" MinHeight="100" MaxHeight="700" Width="500" WindowStartupLocation="CenterScreen"  WindowState="{Binding WindowsState}" WindowStyle="None">
+  
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedWindowCommand}"  CommandParameter="{Binding ElementName=MainWD}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1*"/>
+
+                </Grid.RowDefinitions>
+                <Border Background="#7F41B1E1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel VerticalAlignment="Center"  Orientation="Horizontal">
+                            <UniformGrid HorizontalAlignment="Right" Width="173" Rows="2">
+                                <Label  Content="Đình Huy" Foreground="#FF686868" HorizontalContentAlignment="Center" Background="White"/>
+                                <Label  Content="MANUFACTURING SOLUTION" Foreground="White" Background="#FF3DBD80" FontSize="11"/>
+                            </UniformGrid>
+                            <TextBlock Text="Chức Năng" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"  Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="auto">
+                            <Button Width="50" Margin="0" Command="{Binding HideCommand}" CommandParameter="{Binding ElementName=MainWD}" Style="{StaticResource MaterialDesignFlatButton}" Background="#FF03A9F4" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Content="_" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  FontWeight="Bold" Height="Auto"/>
+                            <Button Width="50" Content="X" Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=MainWD}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Style="{StaticResource MaterialDesignFlatButton}" Background="Red" Opacity="0.8" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  FontWeight="Bold" Height="Auto"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+        <TabControl Grid.Row="1">
+            <TabItem Header="EMS" Visibility="Collapsed">
+                <Grid Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="7*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="100"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+                    <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Margin="5,0">POST CODE:</Label>
+                        <TextBox Text="{Binding PostCode}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0" Width="100"/>
+
+                        <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Margin="5,0">Type:</Label>
+                        <ComboBox VerticalAlignment="Center" SelectedIndex="{Binding TypeIndex}" HorizontalAlignment="Left" Margin="10,0" Width="100">
+                            <ComboBoxItem>
+                                SenderFullname
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                SenderAddress
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                ReceiverFullname
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                ReceiverAddress
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                SendingContent
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                Weight
+                            </ComboBoxItem>
+                        </ComboBox>
+
+                    </StackPanel>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2" Height="auto">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Input" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Output" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Row="1" Text="{Binding InputText,UpdateSourceTrigger=LostFocus}" Margin="10" VerticalAlignment="top" Name="tbMultiLine"  TextWrapping="Wrap"  AcceptsReturn="True">
+                        </TextBox>
+
+                        <TextBox Grid.Row="1" Text="{Binding OutputText}" Margin="10" Grid.Column="1" VerticalAlignment="top"  TextWrapping="Wrap"  AcceptsReturn="True">
+                        </TextBox>
+                    </Grid>
+                    <Button Content="Execute" Command="{Binding ExecuteCommand}" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+                    <Button Content="DELETE" Background="Red" Command="{Binding DeleteCommand}" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Foreground="White"/>
+                    <Button Content="Add Affair" Background="blue" Command="{Binding AddAffairCommand}" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Foreground="White"/>
+                    <Button Content="Update Affair" Background="Yellow" Command="{Binding UpdateAffairCommand}" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="White"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Công Cụ" IsSelected="True" Visibility="Visible">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="70*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView SelectedIndex="{Binding ToolSelectedIndex}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction  Command="{Binding SelectToolChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <!--<ListViewItem Content="LOCK - UNLOCK">
+                        </ListViewItem>-->
+                        <ListViewItem Content="Sửa Lỗi Sự Vụ"/>
+                    </ListView>
+                    <Border BorderBrush="Black" BorderThickness="0,0,2,0"/>
+
+                    <!-- Lock Unlock -->
+                    
+                    
+                    <!--<Grid Grid.Column="1" Name="lockgrid" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border BorderBrush="Black" Grid.Row="1" BorderThickness="0,2,0,2"/>
+
+                        <StackPanel Margin="20,0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                            <TextBlock Text="PostCode" Padding="0,5,0,0"/>
+                            <TextBox Margin="5,0" Text="{Binding PostCodeLock}"  Width="100"/>
+                        </StackPanel>
+                        
+                        <Grid Grid.Row="1">
+                        <Label Content="LOCK" Padding="5,5" BorderThickness="0,0,2,2" BorderBrush="Gray" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+
+                            <Button Command="{Binding LockCommand}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Background="Red" Content="Inactive" Foreground="White" Opacity="0.8"/>
+
+                            <Button Command="{Binding AutolockCommand}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="150" Background="Red" Content="Auto LOCK" Foreground="White" Opacity="0.8"/>
+
+                            <TextBlock Text="{Binding CounterText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Red" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+
+                        </Grid>
+
+                        <Grid Grid.Row="2">
+                            <Label Content="UNLOCK" Padding="5,5" BorderThickness="0,0,2,2" BorderBrush="Gray" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+
+                            <Button Command="{Binding UnlockCommand}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Background="ForestGreen" Content="Active" Foreground="White" Opacity="0.8"/>
+                            
+                        </Grid>
+        
+                        
+                        
+
+
+                    </Grid>-->
+
+                    <!-- Affair -->
+                    <Grid Name="AffairGrid" Grid.Column="1" Visibility="Visible">
+                        <Label Content="Lỗi sự vụ" Padding="5,5" BorderThickness="0,0,2,2" BorderBrush="Gray" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+
+                        <Grid VerticalAlignment="top" Margin="0,50">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Mã Bưu Cục" Margin="5,0,0,10" Padding="0,5,0,0"/>
+                            <TextBox Margin="10,0,10,10" Width="100" HorizontalAlignment="Left" Padding="0,0,0,0" Text="{Binding PostCodeLock,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"  />
+                            <TextBlock Text="Mã Bưu Kiện" Margin="5,0,0,10" Grid.Row="1" Padding="0,5,0,0"/>
+                            <TextBox Margin="10,0,10,10" Padding="0,0,0,0"  Grid.Column="1" Grid.Row="1" Text="{Binding ItemCode,UpdateSourceTrigger=PropertyChanged}"  />
+                            <TextBlock Text="Số Lô" Margin="5,0,0,10" Grid.Row="2" Padding="0,5,0,0"/>
+                            <TextBox Margin="10,0,10,10" Padding="0,0,0,0" Grid.Row="2" Grid.Column="1" Text="{Binding BatchCode,UpdateSourceTrigger=PropertyChanged}" />
+
+                            <Button Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20" Command="{Binding AffairExecuteCommand}" Width="100" Height="50" Foreground="White"  Opacity="0.8" Content="Xử Lý"/>
+                        </Grid>
+                        
+                        
+                    </Grid>
+
+
+                </Grid>
+
+                
+
+
+            </TabItem>
+        </TabControl>
+
+
+
+
+
+    </Grid>
+   
+
+
+</Window>
