@@ -135,10 +135,14 @@
     <Compile Include="ClassHelper\ViewModelHelper.cs" />
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Models\DatabaseInfo.cs" />
+    <Compile Include="UserControls\ImageLoader.xaml.cs">
+      <DependentUpon>ImageLoader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SubControl.xaml.cs">
       <DependentUpon>SubControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\ImageLoaderViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SubControlViewModel.cs" />
     <Compile Include="Windows\ManualDialog.xaml.cs">
@@ -160,6 +164,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ResourceXAML\ResourceXAML.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ImageLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

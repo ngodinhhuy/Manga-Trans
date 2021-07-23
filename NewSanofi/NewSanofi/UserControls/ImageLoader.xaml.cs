@@ -1,0 +1,31 @@
+﻿using NewSanofi.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace NewSanofi.UserControls
+{
+    /// <summary>
+    /// Interaction logic for ImageLoader.xaml
+    /// </summary>
+    public partial class ImageLoader : UserControl
+    {
+        public ImageLoaderViewModel ViewModel { get; set; }
+        public ImageLoader()
+        {
+            InitializeComponent();
+            this.DataContext = ViewModel = new ImageLoaderViewModel();
+        }
+    }
+}

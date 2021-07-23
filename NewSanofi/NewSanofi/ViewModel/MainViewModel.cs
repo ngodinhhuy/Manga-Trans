@@ -20,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using Panel = System.Windows.Forms.Panel;
 
 namespace NewSanofi.ViewModel
 {
@@ -27,6 +28,7 @@ namespace NewSanofi.ViewModel
     {
         #region Field
         private DatabaseInfo DatabaseInfoServer;
+        PictureBox pictureBox;
         MainWindow mw;
         List<string> PostIdList = new List<string>();
         private string _PostCode = "";
@@ -246,9 +248,12 @@ namespace NewSanofi.ViewModel
         public MainViewModel()
         {
             LoadedWindowCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+                mw = (p as MainWindow);
+                WindowsState = WindowState.Maximized;
+                LoadPictureBox();
                 LoadDatabaseInfos();
 
-                mw = (p as MainWindow);
+               
 
                 ToolList.Add("Affair");
 
@@ -478,6 +483,18 @@ namespace NewSanofi.ViewModel
             });
 
            
+        }
+
+        private void LoadPictureBox()
+        {
+            Panel panel = new System.Windows.Forms.Panel();
+            panel.AutoScroll = true;
+            panel.Dock = DockStyle.Fill;
+            pictureBox = new PictureBox();
+            pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+            panel.Controls.Add(pictureBox);
+            (mw.ImageLoaderUC.ViewModel as ImageLoaderViewModel).pictureBox = pictureBox;
+            mw.FormHost.Child = panel;
         }
 
         private void AddAffair(DatabaseInfo di, string[] ItemCode)
