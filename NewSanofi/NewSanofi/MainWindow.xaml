@@ -14,14 +14,14 @@
         SnapsToDevicePixels="True"
         DataContext="{StaticResource MainVM}"
         Title="MainWindow" x:Name="MainWD" FontFamily="{StaticResource MaterialDesignFont}" Height="auto" MinHeight="100"   WindowStartupLocation="CenterScreen"  WindowState="{Binding WindowsState}" WindowStyle="None">
-  
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedWindowCommand}"  CommandParameter="{Binding ElementName=MainWD}"/>
         </i:EventTrigger>
+       
     </i:Interaction.Triggers>
-    
-            <Grid>
+    <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="1*"/>
@@ -39,7 +39,7 @@
                                 <Label  Content="Đình Huy" Foreground="#FF686868" HorizontalContentAlignment="Center" Background="White"/>
                                 <Label  Content="MANUFACTURING SOLUTION" Foreground="White" Background="#FF3DBD80" FontSize="11"/>
                             </UniformGrid>
-                            <TextBlock Text="Chức Năng" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"  Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                            <TextBlock Text="{Binding TitleApp}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"  />
 
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="auto">
@@ -52,12 +52,53 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="350"/>
             </Grid.ColumnDefinitions>
             <usercontrols:ImageLoader x:Name="ImageLoaderUC"/>
             <WindowsFormsHost Name="FormHost" Grid.Column="1">
-                
+              
             </WindowsFormsHost>
+
+            <Grid Grid.Column="2">
+                <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}"
+  TabStripPlacement="Right">
+                    <TabItem
+    Header="{materialDesign:PackIcon Kind=Graphql, Size=24}"
+    Style="{StaticResource MaterialDesignNavigationRailTabItem}">
+                        <Grid>
+                            
+                        </Grid>
+                    </TabItem>
+                    <TabItem
+    Header="{materialDesign:PackIcon Kind=Spade, Size=24}"
+    Style="{StaticResource MaterialDesignNavigationRailTabItem}">
+                        <TextBlock>
+      <Run
+        Text="tab 2 content. Default look and right aligned. " />
+      <LineBreak />
+      <LineBreak />
+      <Run
+        FontStyle="Italic">
+      Praesent sed dui arcu. Vivamus porta auctor sagittis
+    </Run>
+                        </TextBlock>
+                    </TabItem>
+                    <TabItem
+    Header="{materialDesign:PackIcon Kind=Tree, Size=24}"
+    Style="{StaticResource MaterialDesignNavigationRailTabItem}">
+                        <TextBlock>
+      <Run
+        Text="tab 3 content. Default look and right aligned. " />
+      <LineBreak />
+      <LineBreak />
+      <Run
+        FontStyle="Italic">
+      Praesent sed dui arcu. Vivamus porta auctor sagittis
+    </Run>
+                        </TextBlock>
+                    </TabItem>
+                </TabControl>
+            </Grid>
         </Grid>
 
 

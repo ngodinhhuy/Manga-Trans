@@ -1,4 +1,5 @@
-﻿using NewSanofi.UserControls;
+﻿using NewSanofi.ClassHelper;
+using NewSanofi.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -60,7 +61,11 @@ namespace NewSanofi.ViewModel
             LoadedWindowCommand = new RelayCommand<object>((p) => { return true; }, (p) =>
             {
                 imageLoader = (p as ImageLoader);
-                //LoadFolderImage(@"D:\ImageTest");
+                LoadFolderPath();
+                if (CurrentFolder != "")
+                {
+                    LoadFolderImage(CurrentFolder);
+                }
             });
 
             ImageSelectChangedCommand = new RelayCommand<object>((p) => { return true; }, (p) =>
@@ -100,6 +105,20 @@ namespace NewSanofi.ViewModel
             ImageData = new ObservableCollection<string>(ExtensionMethod.GetFilesByExtensions(new DirectoryInfo(path), new[] { ".jpg", ".jpeg", ".jpe", ".jfif", ".png" }).Select(x => x.FullName));
         }
 
+
+        public void SaveFolderPath()
+        {
+            TextFileProcess.WriteFile("ImageFolderPath", new List<string> { CurrentFolder });
+        }
+
+        private void LoadFolderPath()
+        {
+            try
+            {
+                CurrentFolder = TextFileProcess.ReadFile("ImageFolderPath")[0];
+            }
+            catch { }
+        }
 
 
         #endregion

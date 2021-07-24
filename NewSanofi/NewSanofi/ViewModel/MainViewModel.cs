@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -29,6 +31,8 @@ namespace NewSanofi.ViewModel
         #region Field
         private DatabaseInfo DatabaseInfoServer;
         PictureBox pictureBox;
+        Region region;
+        List<System.Drawing.Point> polyPoints=new List<System.Drawing.Point>();
         MainWindow mw;
         List<string> PostIdList = new List<string>();
         private string _PostCode = "";
@@ -41,7 +45,17 @@ namespace NewSanofi.ViewModel
             }
         }
 
-    DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+        private string _TitleApp = "Chức Năng";
+        public string TitleApp
+        {
+            get => _TitleApp; set
+            {
+                _TitleApp = value;
+                OnPropertyChanged();
+            }
+        }
+
+        DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
     
 
         private int _CounterText = 0;
@@ -213,6 +227,7 @@ namespace NewSanofi.ViewModel
 
         public ICommand LoadedWindowCommand { get; set; }
 
+
         public ICommand ExecuteCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
 
@@ -262,6 +277,9 @@ namespace NewSanofi.ViewModel
                 dispatcherTimer.Interval = new TimeSpan(0,30, 0);
                 //dispatcherTimer.Start();
             });
+
+
+            
 
 
             AffairExecuteCommand = new RelayCommand<object>((p) => {
@@ -468,7 +486,7 @@ namespace NewSanofi.ViewModel
                 if (MessageWindow.ShowMessage(s) == MessageBoxResult.Yes)
                 {
                         SaveDatabaseInfos(MainWindow.DatabaseInfos);
-                        
+                        (mw.ImageLoaderUC.ViewModel).SaveFolderPath();
                      (p as Window).Close();
                 }
 
@@ -491,10 +509,57 @@ namespace NewSanofi.ViewModel
             panel.AutoScroll = true;
             panel.Dock = DockStyle.Fill;
             pictureBox = new PictureBox();
+            pictureBox.MouseClick += PictureBox_MouseClick; ;
+            pictureBox.MouseEnter += PictureBox_MouseEnter;
+            pictureBox.MouseLeave += PictureBox_MouseLeave; ;
             pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
             panel.Controls.Add(pictureBox);
             (mw.ImageLoaderUC.ViewModel as ImageLoaderViewModel).pictureBox = pictureBox;
             mw.FormHost.Child = panel;
+        }
+
+        private void PictureBox_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                drawPoint(e.Location.X, e.Location.Y);
+                polyPoints.Add(e.Location);
+            }
+            if (e.Button == MouseButtons.Middle)
+            {
+                Graphics g = Graphics.FromHwnd(pictureBox.Handle);
+
+                GraphicsPath path = new GraphicsPath();
+                path.AddPolygon(polyPoints.ToArray());
+                region = new Region(path);
+                System.Drawing.Pen pen = Pens.Red;
+                g.DrawPath(pen, path);
+                g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
+                g.Clear(System.Drawing.Color.Red);
+                g.DrawString("hello")
+            }
+        }
+
+
+        public void drawPoint(int x, int y)
+        {
+            Graphics g = Graphics.FromHwnd(pictureBox.Handle);
+            SolidBrush brush = new SolidBrush(System.Drawing.Color.Red);
+            System.Drawing.Point dPoint = new System.Drawing.Point(x, y);
+            Rectangle rect = new Rectangle(dPoint, new System.Drawing.Size(4, 4));
+            g.FillRectangle(brush, rect);
+            g.Dispose();
+        }
+
+        private void PictureBox_MouseLeave(object sender, EventArgs e)
+        {
+            //mw.Cursor = System.Windows.Input.Cursors.Arrow;
+            //TitleApp = "bye";
+        }
+
+        private void PictureBox_MouseEnter(object sender, EventArgs e)
+        {
+            //pictureBox.Cursor = new System.Windows.Forms.Cursor("Data/Pen.ico");
         }
 
         private void AddAffair(DatabaseInfo di, string[] ItemCode)
