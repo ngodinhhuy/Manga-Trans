@@ -71,7 +71,7 @@
     Header="{materialDesign:PackIcon Kind=Graphql, Size=24}"
     Style="{StaticResource MaterialDesignNavigationRailTabItem}">
                         <Grid>
-                            
+                            <WindowsFormsHost Name="PreviewHost" Margin="2" Height="200" VerticalAlignment="Top"></WindowsFormsHost>
                         </Grid>
                     </TabItem>
                     <TabItem

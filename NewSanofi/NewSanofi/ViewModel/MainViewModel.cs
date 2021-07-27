@@ -31,6 +31,7 @@ namespace NewSanofi.ViewModel
         #region Field
         private DatabaseInfo DatabaseInfoServer;
         PictureBox pictureBox;
+        PictureBox pictureBoxPreview;
         Region region;
         List<System.Drawing.Point> polyPoints=new List<System.Drawing.Point>();
         MainWindow mw;
@@ -527,6 +528,9 @@ namespace NewSanofi.ViewModel
             panel.Controls.Add(pictureBox);
             (mw.ImageLoaderUC.ViewModel as ImageLoaderViewModel).pictureBox = pictureBox;
             mw.FormHost.Child = panel;
+
+            pictureBoxPreview = new PictureBox();
+            mw.PreviewHost.Child = pictureBoxPreview;
         }
 
         private void PictureBox_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -583,7 +587,9 @@ namespace NewSanofi.ViewModel
                 System.Drawing.Pen pen = Pens.Red;
                 g.DrawPath(pen, path);
                 g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
-                g.Clear(System.Drawing.Color.Red);
+                //g.Clear(System.Drawing.Color.Red);
+                //MessageBox.Show("clear");
+                polyPoints.Clear();
             }
         }
 
