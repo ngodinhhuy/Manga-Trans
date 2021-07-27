@@ -55,6 +55,16 @@ namespace NewSanofi.ViewModel
             }
         }
 
+        private string _ColorText = "";
+        public string ColorText
+        {
+            get => _ColorText; set
+            {
+                _ColorText = value;
+                OnPropertyChanged();
+            }
+        }
+
         DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
     
 
@@ -509,19 +519,57 @@ namespace NewSanofi.ViewModel
             panel.AutoScroll = true;
             panel.Dock = DockStyle.Fill;
             pictureBox = new PictureBox();
-            pictureBox.MouseClick += PictureBox_MouseClick; ;
+            pictureBox.MouseClick += PictureBox_MouseClick;
             pictureBox.MouseEnter += PictureBox_MouseEnter;
-            pictureBox.MouseLeave += PictureBox_MouseLeave; ;
+            pictureBox.MouseLeave += PictureBox_MouseLeave;
+            pictureBox.MouseMove += PictureBox_MouseMove;
             pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
             panel.Controls.Add(pictureBox);
             (mw.ImageLoaderUC.ViewModel as ImageLoaderViewModel).pictureBox = pictureBox;
             mw.FormHost.Child = panel;
         }
 
+        private void PictureBox_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            ColorText = (e.Location.X.ToString() + ',' + e.Location.Y.ToString());
+            //var color = GetColor(e.Location);
+            //ColorText = RGBConverter(color);
+
+        }
+
+        private System.Drawing.Color GetColor(System.Drawing.Point point)
+        {
+                using (var bitmap = new Bitmap(1, 1))
+                {
+                    using (var graphics = Graphics.FromImage(bitmap))
+                    {
+                        graphics.CopyFromScreen(point, new System.Drawing.Point(0, 0), new System.Drawing.Size(1, 1));
+                    }
+                    return bitmap.GetPixel(0, 0);
+                }
+            
+        }
+
+        private String RGBConverter(System.Drawing.Color c)
+        {
+            String rtn = String.Empty;
+            try
+            {
+                rtn = "RGB(" + c.R.ToString() + "," + c.G.ToString() + "," + c.B.ToString() + ")";
+            }
+            catch (Exception ex)
+            {
+                //doing nothing
+            }
+
+            return rtn;
+        }
+
         private void PictureBox_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
+                ColorText = (e.Location.X.ToString() + ',' + e.Location.Y.ToString());
                 drawPoint(e.Location.X, e.Location.Y);
                 polyPoints.Add(e.Location);
             }
@@ -534,10 +582,8 @@ namespace NewSanofi.ViewModel
                 region = new Region(path);
                 System.Drawing.Pen pen = Pens.Red;
                 g.DrawPath(pen, path);
-                polyPoints.Clear();
                 g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
-               // g.Clear(System.Drawing.Color.Red);
-               //                g.DrawString("hello")
+                g.Clear(System.Drawing.Color.Red);
             }
         }
 
