@@ -60,6 +60,11 @@
             </WindowsFormsHost>
 
             <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="40px"/>
+                </Grid.RowDefinitions>
+                
                 <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}"
   TabStripPlacement="Right">
                     <TabItem
@@ -98,6 +103,7 @@
                         </TextBlock>
                     </TabItem>
                 </TabControl>
+                <TextBlock Text="{Binding ColorText}" Grid.Row="1"/>
             </Grid>
         </Grid>
 
