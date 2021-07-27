@@ -534,9 +534,10 @@ namespace NewSanofi.ViewModel
                 region = new Region(path);
                 System.Drawing.Pen pen = Pens.Red;
                 g.DrawPath(pen, path);
+                polyPoints.Clear();
                 g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
-                g.Clear(System.Drawing.Color.Red);
-                g.DrawString("hello")
+               // g.Clear(System.Drawing.Color.Red);
+               //                g.DrawString("hello")
             }
         }
 
