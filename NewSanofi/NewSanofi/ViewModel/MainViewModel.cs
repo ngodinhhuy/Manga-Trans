@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -42,6 +43,16 @@ namespace NewSanofi.ViewModel
             get => _PostCode; set
             {
                 _PostCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _TransText = "";
+        public string TransText
+        {
+            get => _TransText; set
+            {
+                _TransText = value;
                 OnPropertyChanged();
             }
         }
@@ -237,7 +248,7 @@ namespace NewSanofi.ViewModel
         #region Command
 
         public ICommand LoadedWindowCommand { get; set; }
-
+        public ICommand TranslateCommand { get; set; }
 
         public ICommand ExecuteCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
@@ -289,8 +300,12 @@ namespace NewSanofi.ViewModel
                 //dispatcherTimer.Start();
             });
 
+            TranslateCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+            TransText= RunPython("test.py", @"F:\HuyNgo\python\OCR\csv\2r.jpg");
+            });
 
-            
+
+
 
 
             AffairExecuteCommand = new RelayCommand<object>((p) => {
@@ -586,13 +601,65 @@ namespace NewSanofi.ViewModel
                 region = new Region(path);
                 System.Drawing.Pen pen = Pens.Red;
                 g.DrawPath(pen, path);
-                g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
+                //g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
                 //g.Clear(System.Drawing.Color.Red);
                 //MessageBox.Show("clear");
+                var cloneRect=GetRecRegion(polyPoints);
+                Bitmap default_image = new Bitmap(pictureBox.Image);
+                System.Drawing.Imaging.PixelFormat format = default_image.PixelFormat;
+                Bitmap cloneBitmap = default_image.Clone(cloneRect, format);
+                pictureBoxPreview.Image = cloneBitmap;
                 polyPoints.Clear();
+
+                
+
             }
         }
 
+        
+        private string RunPython(string cmd, string args)
+        {
+            string path = Path.Combine(MainWindow.currentDirectory, @"Data\", cmd);
+            ProcessStartInfo start = new ProcessStartInfo();
+            start.FileName = @"C:\Users\KTNV-LD-ITMANH\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\python.exe";
+            path = "print('Hello World!')";
+            start.Arguments = string.Format("{0}", path);
+            start.UseShellExecute = false;
+            start.RedirectStandardOutput = true;
+            using (Process process = Process.Start(start))
+            {
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    string result = reader.ReadToEnd();
+                    return result;
+                }
+            }
+
+
+
+
+        }
+
+        private Rectangle GetRecRegion(List<System.Drawing.Point> polyPoints)
+        {
+            Rectangle rectangle = new Rectangle();
+            List<int> xdimension = new List<int>();
+            List<int> ydimension = new List<int>();
+            foreach (var point in polyPoints)
+            {
+                xdimension.Add(point.X);
+                ydimension.Add(point.Y);
+            }
+            var minx = xdimension.Min();
+            var maxx = xdimension.Max();
+            var miny = ydimension.Min();
+            var maxy = ydimension.Max();
+            rectangle.X = minx;
+            rectangle.Y = miny;
+            rectangle.Width = maxx - minx;
+            rectangle.Height = maxy - miny;
+            return rectangle;
+        }
 
         public void drawPoint(int x, int y)
         {

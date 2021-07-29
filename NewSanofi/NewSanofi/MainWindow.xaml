@@ -71,7 +71,20 @@
     Header="{materialDesign:PackIcon Kind=Graphql, Size=24}"
     Style="{StaticResource MaterialDesignNavigationRailTabItem}">
                         <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="200"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="40px"/>
+                            </Grid.RowDefinitions>
                             <WindowsFormsHost Name="PreviewHost" Margin="2" Height="200" VerticalAlignment="Top"></WindowsFormsHost>
+                            <TextBox Text="{Binding TransText}"
+  TextWrapping="Wrap" Grid.Row="1"
+  VerticalAlignment="Stretch"
+  AcceptsReturn="True"
+  VerticalScrollBarVisibility="Auto"
+  SpellCheck.IsEnabled="True"
+  materialDesign:HintAssist.Hint="Multiline text"/>
+                            <Button Command="{Binding TranslateCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="Translate" Grid.Row="2"/>
                         </Grid>
                     </TabItem>
                     <TabItem
