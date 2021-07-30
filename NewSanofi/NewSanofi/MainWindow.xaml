@@ -77,14 +77,31 @@
                                 <RowDefinition Height="40px"/>
                             </Grid.RowDefinitions>
                             <WindowsFormsHost Name="PreviewHost" Margin="2" Height="200" VerticalAlignment="Top"></WindowsFormsHost>
-                            <TextBox Text="{Binding TransText}"
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+                                </Grid.RowDefinitions>
+                            <TextBox Text="{Binding OCRText}"
+  TextWrapping="Wrap"
+  VerticalAlignment="Stretch"
+  AcceptsReturn="True"
+  VerticalScrollBarVisibility="Auto"
+  SpellCheck.IsEnabled="True"
+  materialDesign:HintAssist.Hint="ORIGINAL TEXT"/>
+
+                                <TextBox Text="{Binding TransText}"
   TextWrapping="Wrap" Grid.Row="1"
   VerticalAlignment="Stretch"
   AcceptsReturn="True"
   VerticalScrollBarVisibility="Auto"
   SpellCheck.IsEnabled="True"
-  materialDesign:HintAssist.Hint="Multiline text"/>
-                            <Button Command="{Binding TranslateCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="Translate" Grid.Row="2"/>
+  materialDesign:HintAssist.Hint="TRANS TEXT"/>
+                            </Grid>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <Button Command="{Binding OCRCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="OCR"/>
+                                <Button Command="{Binding TranslateCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="Translate"/>
+                            </StackPanel>
                         </Grid>
                     </TabItem>
                     <TabItem
@@ -116,7 +133,10 @@
                         </TextBlock>
                     </TabItem>
                 </TabControl>
-                <TextBlock Text="{Binding ColorText}" Grid.Row="1"/>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                <TextBlock Text="{Binding ColorText}"/>
+                    <TextBlock Text="{Binding StatusText}"/>
+                </StackPanel>
             </Grid>
         </Grid>
 

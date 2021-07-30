@@ -1,4 +1,5 @@
-﻿using NewSanofi.ClassHelper;
+﻿using IronOcr;
+using NewSanofi.ClassHelper;
 using NewSanofi.Models;
 using NewSanofi.UserControls;
 using NewSanofi.Windows;
@@ -57,6 +58,16 @@ namespace NewSanofi.ViewModel
             }
         }
 
+        private string _OCRText = "";
+        public string OCRText
+        {
+            get => _OCRText; set
+            {
+                _OCRText = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _TitleApp = "Chức Năng";
         public string TitleApp
         {
@@ -73,6 +84,16 @@ namespace NewSanofi.ViewModel
             get => _ColorText; set
             {
                 _ColorText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _StatusText = "";
+        public string StatusText
+        {
+            get => _StatusText; set
+            {
+                _StatusText = value;
                 OnPropertyChanged();
             }
         }
@@ -249,6 +270,7 @@ namespace NewSanofi.ViewModel
 
         public ICommand LoadedWindowCommand { get; set; }
         public ICommand TranslateCommand { get; set; }
+        public ICommand OCRCommand { get; set; }
 
         public ICommand ExecuteCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
@@ -301,7 +323,12 @@ namespace NewSanofi.ViewModel
             });
 
             TranslateCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
-            TransText= RunPython("test.py", @"F:\HuyNgo\python\OCR\csv\2r.jpg");
+                
+            });
+            OCRCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+                string text0 = RunPython(StatusText);
+                string text1 = text0.Replace("\r\n", " ");
+                OCRText = text1;
             });
 
 
@@ -610,34 +637,31 @@ namespace NewSanofi.ViewModel
                 Bitmap cloneBitmap = default_image.Clone(cloneRect, format);
                 pictureBoxPreview.Image = cloneBitmap;
                 polyPoints.Clear();
-
+                SaveImageToTemp(cloneBitmap);
                 
 
             }
         }
 
-        
-        private string RunPython(string cmd, string args)
+        private void SaveImageToTemp(Bitmap cloneBitmap)
         {
-            string path = Path.Combine(MainWindow.currentDirectory, @"Data\", cmd);
-            ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = @"C:\Users\KTNV-LD-ITMANH\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\python.exe";
-            path = "print('Hello World!')";
-            start.Arguments = string.Format("{0}", path);
-            start.UseShellExecute = false;
-            start.RedirectStandardOutput = true;
-            using (Process process = Process.Start(start))
+            string result = Path.GetTempPath();
+            string fileName = "IMageName.jpg";
+            string imagePath = result + fileName;
+            cloneBitmap.Save(imagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+            StatusText = imagePath;
+        }
+
+        private string RunPython(string args)
+        {
+            var Ocr = new IronTesseract();
+            string result = "";
+            using (var Input = new OcrInput(args))
             {
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    string result = reader.ReadToEnd();
-                    return result;
-                }
+                var Result = Ocr.Read(Input);
+                result = Result.Text;
             }
-
-
-
-
+            return result;
         }
 
         private Rectangle GetRecRegion(List<System.Drawing.Point> polyPoints)
