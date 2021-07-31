@@ -5,6 +5,7 @@ using NewSanofi.UserControls;
 using NewSanofi.Windows;
 using SimpleTCP;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -14,9 +15,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -322,10 +325,18 @@ namespace NewSanofi.ViewModel
                 //dispatcherTimer.Start();
             });
 
-            TranslateCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
-                
+            TranslateCommand = new  RelayCommand<object>((p) => {
+                if (OCRText == "")
+                    return false;
+                return true; }, (p) => {
+
+                TransExecute();
+
             });
-            OCRCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+
+            
+
+                OCRCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
                 string text0 = RunPython(StatusText);
                 string text1 = text0.Replace("\r\n", " ");
                 OCRText = text1;
@@ -548,12 +559,35 @@ namespace NewSanofi.ViewModel
 
 
 
-            HideCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+            HideCommand = new RelayCommand<object>((p) => {
+                
+                return true; }, (p) => {
                 
                     (p as Window).WindowState = WindowState.Minimized;
             });
 
            
+        }
+
+        private void TransExecute()
+        {
+            string url = String.Format
+            ("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&q={2}",
+             "en", "vi", Uri.EscapeUriString(OCRText));
+            HttpClient httpClient = new HttpClient();
+            string result = httpClient.GetStringAsync(url).Result;
+            var jsonData = new JavaScriptSerializer().Deserialize<List<dynamic>>(result);
+            var translationItems = jsonData[0];
+            string translation = "";
+            foreach (object item in translationItems)
+            {
+                IEnumerable translationLineObject = item as IEnumerable;
+                IEnumerator translationLineString = translationLineObject.GetEnumerator();
+                translationLineString.MoveNext();
+                translation += string.Format(" {0}", Convert.ToString(translationLineString.Current));
+            }
+            if (translation.Length > 1) { translation = translation.Substring(1); };
+            TransText= translation;
         }
 
         private void LoadPictureBox()
