@@ -38,7 +38,7 @@ namespace NewSanofi.ViewModel
         private DatabaseInfo DatabaseInfoServer;
         PictureBox pictureBox;
         PictureBox pictureBoxPreview;
-        Bitmap picwgraphic;
+        Bitmap picwgraphic,picNGraphic;
         Graphics graphicsPic;
         Region region;
         List<System.Drawing.Point> polyPoints=new List<System.Drawing.Point>();
@@ -682,6 +682,7 @@ namespace NewSanofi.ViewModel
 
         public void ChangeImageExecute()
         {
+            picNGraphic = new Bitmap(pictureBox.Image);
             Bitmap test = new Bitmap(pictureBox.Width, pictureBox.Height);
             graphicsPic = Graphics.FromImage(test);
             
@@ -709,21 +710,24 @@ namespace NewSanofi.ViewModel
                 region = new Region(path);
                 System.Drawing.Pen pen = Pens.Red;
                 graphicsPic.DrawPath(pen, path);
+                
+                graphicsPic.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
+                graphicsPic.DrawString("hello", new Font(new System.Drawing.FontFamily("Arial"), 16, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel), new SolidBrush(System.Drawing.Color.Black),region.GetBounds(graphicsPic));
+                //graphicsPic.Clear(System.Drawing.Color.Red);
+                //MessageBox.Show("clear");
                 pictureBox.Update();
                 pictureBox.Refresh();
-                //g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
-                //g.Clear(System.Drawing.Color.Red);
-                //MessageBox.Show("clear");
                 var cloneRect=GetRecRegion(polyPoints);
                 picwgraphic = new Bitmap(pictureBox.Image);
+                
                 System.Drawing.Imaging.PixelFormat format = picwgraphic.PixelFormat;
-                Bitmap cloneBitmap = picwgraphic.Clone(cloneRect, format);
+                Bitmap cloneBitmap = picNGraphic.Clone(cloneRect, format);
                 pictureBoxPreview.Image = cloneBitmap;
                 polyPoints.Clear();
                 SaveImageToTemp(cloneBitmap);
 
+                // graphicsPic.Clear(System.Drawing.Color.Red);
                 
-
             }
         }
 
