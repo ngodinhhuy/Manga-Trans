@@ -101,6 +101,8 @@
                             <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <Button Command="{Binding OCRCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="OCR"/>
                                 <Button Command="{Binding TranslateCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="Translate"/>
+                                <Button Command="{Binding ColorDetectCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="Color Detect"/>
+                                <Button Command="{Binding SaveImageCommand}" Style="{StaticResource MaterialDesignFlatButton}" Content="save image"/>
                             </StackPanel>
                         </Grid>
                     </TabItem>

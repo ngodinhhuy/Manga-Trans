@@ -20,6 +20,7 @@ namespace NewSanofi.ViewModel
         #region Field
         ImageLoader imageLoader;
         public PictureBox pictureBox;
+        public MainViewModel mwm;
         string[] filePaths;
         string CurrentFolder = "";
 
@@ -73,6 +74,8 @@ namespace NewSanofi.ViewModel
                 if ( ImageIndexSelected!=-1)
                 {
                     pictureBox.Image = Image.FromFile(ImageData[ImageIndexSelected]);
+                    mwm.ChangeImageExecute();
+
                 }
 
             });

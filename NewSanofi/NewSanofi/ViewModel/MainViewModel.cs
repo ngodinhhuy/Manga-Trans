@@ -13,6 +13,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -37,6 +38,8 @@ namespace NewSanofi.ViewModel
         private DatabaseInfo DatabaseInfoServer;
         PictureBox pictureBox;
         PictureBox pictureBoxPreview;
+        Bitmap picwgraphic;
+        Graphics graphicsPic;
         Region region;
         List<System.Drawing.Point> polyPoints=new List<System.Drawing.Point>();
         MainWindow mw;
@@ -273,6 +276,11 @@ namespace NewSanofi.ViewModel
 
         public ICommand LoadedWindowCommand { get; set; }
         public ICommand TranslateCommand { get; set; }
+
+        public ICommand ColorDetectCommand { get; set; }
+
+        public ICommand SaveImageCommand { get; set; }
+
         public ICommand OCRCommand { get; set; }
 
         public ICommand ExecuteCommand { get; set; }
@@ -314,8 +322,8 @@ namespace NewSanofi.ViewModel
                 WindowsState = WindowState.Maximized;
                 LoadPictureBox();
                 LoadDatabaseInfos();
+                (mw.ImageLoaderUC.ViewModel as ImageLoaderViewModel).mwm = this;
 
-               
 
                 ToolList.Add("Affair");
 
@@ -334,11 +342,25 @@ namespace NewSanofi.ViewModel
 
             });
 
-            
+            ColorDetectCommand = new RelayCommand<object>((p) => {
+                if (polyPoints.Count != 2)
+                    return false;
+                return true;
+            }, (p) => {
 
-                OCRCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+                ColorDetectExecute(polyPoints[0], polyPoints[1]);
+                polyPoints.Clear();
+            });
+
+            SaveImageCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
+                pictureBox.Image.Save(@"C:\Users\Admin\Desktop\huy.jpg", ImageFormat.Jpeg);
+            });
+
+
+
+            OCRCommand = new RelayCommand<object>((p) => { return true; }, (p) => {
                 string text0 = RunPython(StatusText);
-                string text1 = text0.Replace("\r\n", " ");
+                string text1 = text0.Replace("\r\n", " ").Replace('|','I');
                 OCRText = text1;
             });
 
@@ -569,6 +591,17 @@ namespace NewSanofi.ViewModel
            
         }
 
+        private void ColorDetectExecute(System.Drawing.Point a, System.Drawing.Point b)
+        {
+
+             Bitmap default_image = new Bitmap(pictureBox.Image);
+            var colora = default_image.GetPixel(a.X, a.Y);
+            string col1 = colora.G+","+ colora.R + "," + colora.B;
+            var colorb = default_image.GetPixel(b.X, b.Y);
+            string col2 = colorb.G + "," + colorb.R + "," + colorb.B;
+            ColorText = string.Format("Color 1: {0}, Color 2: {1}", col1, col2);
+        }
+
         private void TransExecute()
         {
             string url = String.Format
@@ -609,6 +642,8 @@ namespace NewSanofi.ViewModel
             mw.PreviewHost.Child = pictureBoxPreview;
         }
 
+       
+
         private void PictureBox_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             ColorText = (e.Location.X.ToString() + ',' + e.Location.Y.ToString());
@@ -645,6 +680,16 @@ namespace NewSanofi.ViewModel
             return rtn;
         }
 
+        public void ChangeImageExecute()
+        {
+            Bitmap test = new Bitmap(pictureBox.Width, pictureBox.Height);
+            graphicsPic = Graphics.FromImage(test);
+            
+                graphicsPic.DrawImage(pictureBox.Image, new System.Drawing.Point(0, 0));
+                pictureBox.Image = test;
+            
+        }
+
         private void PictureBox_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -652,26 +697,31 @@ namespace NewSanofi.ViewModel
                 ColorText = (e.Location.X.ToString() + ',' + e.Location.Y.ToString());
                 drawPoint(e.Location.X, e.Location.Y);
                 polyPoints.Add(e.Location);
+                pictureBox.Update();
+                pictureBox.Refresh();
             }
             if (e.Button == MouseButtons.Middle)
             {
-                Graphics g = Graphics.FromHwnd(pictureBox.Handle);
-
+               // Graphics g = Graphics.FromHwnd(pictureBox.Handle);
+               
                 GraphicsPath path = new GraphicsPath();
                 path.AddPolygon(polyPoints.ToArray());
                 region = new Region(path);
                 System.Drawing.Pen pen = Pens.Red;
-                g.DrawPath(pen, path);
+                graphicsPic.DrawPath(pen, path);
+                pictureBox.Update();
+                pictureBox.Refresh();
                 //g.FillRegion(new SolidBrush(System.Drawing.Color.White), region);
                 //g.Clear(System.Drawing.Color.Red);
                 //MessageBox.Show("clear");
                 var cloneRect=GetRecRegion(polyPoints);
-                Bitmap default_image = new Bitmap(pictureBox.Image);
-                System.Drawing.Imaging.PixelFormat format = default_image.PixelFormat;
-                Bitmap cloneBitmap = default_image.Clone(cloneRect, format);
+                picwgraphic = new Bitmap(pictureBox.Image);
+                System.Drawing.Imaging.PixelFormat format = picwgraphic.PixelFormat;
+                Bitmap cloneBitmap = picwgraphic.Clone(cloneRect, format);
                 pictureBoxPreview.Image = cloneBitmap;
                 polyPoints.Clear();
                 SaveImageToTemp(cloneBitmap);
+
                 
 
             }
@@ -721,12 +771,12 @@ namespace NewSanofi.ViewModel
 
         public void drawPoint(int x, int y)
         {
-            Graphics g = Graphics.FromHwnd(pictureBox.Handle);
+            // g = Graphics.FromHwnd(pictureBox.Handle);
             SolidBrush brush = new SolidBrush(System.Drawing.Color.Red);
             System.Drawing.Point dPoint = new System.Drawing.Point(x, y);
             Rectangle rect = new Rectangle(dPoint, new System.Drawing.Size(4, 4));
-            g.FillRectangle(brush, rect);
-            g.Dispose();
+            graphicsPic.FillRectangle(brush, rect);
+            
         }
 
         private void PictureBox_MouseLeave(object sender, EventArgs e)
